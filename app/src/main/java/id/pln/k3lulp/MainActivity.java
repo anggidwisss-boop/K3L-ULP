@@ -17,7 +17,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.Toast;
-import androidx.annotation.Nullable;
 
 public class MainActivity extends Activity {
     private static final int REQ_PERMISSIONS = 100;
@@ -57,28 +56,20 @@ public class MainActivity extends Activity {
         });
         webView.setWebChromeClient(new WebChromeClient() {
             @Override public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback cb) {
-                if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                    checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) cb.invoke(origin, true, false);
-                else cb.invoke(origin, false, false);
+                boolean ok = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                cb.invoke(origin, ok, false);
             }
             @Override public void onPermissionRequest(final PermissionRequest request) {
                 runOnUiThread(() -> {
-                    if (android.os.Build.VERSION.SDK_INT >= 21 && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                        request.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
-                    } else request.deny();
+                    if (android.os.Build.VERSION.SDK_INT >= 21 && checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) request.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
+                    else request.deny();
                 });
             }
             @Override public boolean onShowFileChooser(WebView v, ValueCallback<Uri[]> cb, FileChooserParams params) {
                 if (uploadCallback != null) uploadCallback.onReceiveValue(null);
                 uploadCallback = cb;
-                try {
-                    Intent i = params.createIntent();
-                    startActivityForResult(i, REQ_FILE);
-                } catch (Exception e) {
-                    uploadCallback = null;
-                    Toast.makeText(MainActivity.this, "Pemilih foto tidak tersedia", Toast.LENGTH_SHORT).show();
-                    return false;
-                }
+                try { startActivityForResult(params.createIntent(), REQ_FILE); }
+                catch (Exception e) { uploadCallback = null; Toast.makeText(MainActivity.this, "Pemilih foto tidak tersedia", Toast.LENGTH_SHORT).show(); return false; }
                 return true;
             }
         });
@@ -97,11 +88,9 @@ public class MainActivity extends Activity {
         final EditText input = new EditText(this);
         input.setSingleLine(true);
         input.setHint("https://script.google.com/macros/s/.../exec");
-        new android.app.AlertDialog.Builder(this)
-            .setTitle("SISTEM K3L ULP")
+        new android.app.AlertDialog.Builder(this).setTitle("SISTEM K3L ULP")
             .setMessage("Masukkan URL Web App Google Apps Script K3L. URL disimpan di perangkat dan hanya perlu diisi sekali.")
-            .setView(input)
-            .setCancelable(false)
+            .setView(input).setCancelable(false)
             .setPositiveButton("Simpan & Buka", (d, w) -> {
                 String url = input.getText().toString().trim();
                 if (url.startsWith("https://")) { prefs.edit().putString(KEY_URL, url).apply(); load(url); }
@@ -111,7 +100,7 @@ public class MainActivity extends Activity {
 
     private void load(String url) { webView.loadUrl(url); }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQ_FILE && uploadCallback != null) {
             Uri[] results = null;
@@ -123,12 +112,9 @@ public class MainActivity extends Activity {
                     for (int i=0;i<n;i++) results[i] = data.getClipData().getItemAt(i).getUri();
                 }
             }
-            uploadCallback.onReceiveValue(results);
-            uploadCallback = null;
+            uploadCallback.onReceiveValue(results); uploadCallback = null;
         }
     }
 
-    @Override public void onBackPressed() {
-        if (webView != null && webView.canGoBack()) webView.goBack(); else super.onBackPressed();
-    }
+    @Override public void onBackPressed() { if (webView != null && webView.canGoBack()) webView.goBack(); else super.onBackPressed(); }
 }
