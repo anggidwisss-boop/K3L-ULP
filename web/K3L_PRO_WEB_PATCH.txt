@@ -1,0 +1,21 @@
+K3L-ULP PRO — WEB FEATURE PATCH
+
+Fitur: Beranda, Rilis Berita, Akun, dan role-based UI.
+
+BACKEND Code.gs: tambahkan fungsi:
+- getK3LRolePermissions_
+- getUserProfileK3L
+- ensureBeritaSheetK3L_
+- getBeritaK3L
+- simpanBeritaK3L
+
+Frontend index.html: gunakan index_K3L_PRO_FINAL.html dari paket K3L PRO yang disiapkan. Fitur yang ditambahkan:
+- 🏠 Beranda: welcome user, profil login, feed berita.
+- 📰 Rilis Berita: feed berita untuk semua; form terbit berita untuk ADMIN/TL K3L.
+- 👤 Akun: nama, username, role, unit, dan kewenangan role.
+- Role UI: ADMIN, TL K3L, PETUGAS, VIEWER.
+- Setelah login, halaman awal diarahkan ke Beranda.
+
+Sheet BERITA_K3L dibuat otomatis dengan kolom ID, TANGGAL, PENULIS, UNIT, JUDUL, ISI, KATEGORI, STATUS, USERNAME.
+
+Android K3L-ULP PRO memuat URL Web App yang sudah ditanam permanen, sehingga setelah Apps Script dideploy ulang, fitur web yang sama tampil di Android.
