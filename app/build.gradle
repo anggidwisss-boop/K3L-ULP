@@ -1,0 +1,5 @@
+plugins { id 'com.android.application' }
+
+android { namespace 'id.pln.k3lulp'; compileSdk 35
+    defaultConfig { applicationId 'id.pln.k3lulp'; minSdk 23; targetSdk 35; versionCode 1; versionName '1.0.0' }
+}
