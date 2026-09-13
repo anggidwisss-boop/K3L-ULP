@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <application android:theme="@style/AppTheme" android:label="Sistem K3L ULP Empang" android:usesCleartextTraffic="false" android:resizeableActivity="true">
+    <application android:theme="@style/AppTheme" android:label="Sistem K3L ULP Empang" android:icon="@drawable/ic_launcher_k3l" android:roundIcon="@drawable/ic_launcher_k3l" android:usesCleartextTraffic="false" android:resizeableActivity="true">
         <activity android:name=".MainActivity" android:screenOrientation="portrait" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
